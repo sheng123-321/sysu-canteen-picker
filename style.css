@@ -35,13 +35,38 @@ h1 span { color: var(--purple); }
 }
 
 .picker-card { padding: 28px; }
-.filters { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+.filters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.filters > label { min-width: 0; }
 label span { display: block; margin: 0 0 7px; font-size: 0.85rem; font-weight: 700; }
 select {
   width: 100%; padding: 11px 10px; border: 1px solid #ddd7ec; border-radius: 11px;
   color: var(--ink); background: #fff; font: inherit; cursor: pointer;
 }
 select:focus { outline: 3px solid #ddd5ff; border-color: var(--purple); }
+
+.quick-filter { grid-column: 1 / -1; }
+.filter-label { display: block; margin-bottom: 7px; font-size: 0.85rem; font-weight: 700; }
+.quick-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.quick-option { position: relative; cursor: pointer; }
+.quick-option input { position: absolute; opacity: 0; }
+.quick-option span {
+  display: block; margin: 0; padding: 8px 12px; border: 1px solid #ddd7ec; border-radius: 999px;
+  color: #625d76; background: #fff; font-size: 0.85rem; font-weight: 700; transition: 0.15s;
+}
+.quick-option input:checked + span { border-color: var(--purple); color: #fff; background: var(--purple); }
+.quick-option input:focus-visible + span { outline: 3px solid #ddd5ff; outline-offset: 2px; }
+
+.more-filters { margin-top: 18px; border-top: 1px solid #eeeaf5; }
+.more-filters summary {
+  display: flex; align-items: center; justify-content: space-between; padding: 14px 2px 4px;
+  color: #5d5774; font-size: 0.9rem; font-weight: 700; cursor: pointer; list-style: none;
+}
+.more-filters summary::-webkit-details-marker { display: none; }
+.more-filters summary span { transition: transform 0.2s; }
+.more-filters[open] summary span { transform: rotate(180deg); }
+.checkbox-option { display: inline-flex; align-items: center; gap: 8px; padding: 12px 2px 2px; cursor: pointer; }
+.checkbox-option span { margin: 0; font-size: 0.9rem; }
+.checkbox-option input { width: 17px; height: 17px; accent-color: var(--purple); cursor: pointer; }
 
 button {
   width: 100%; margin-top: 22px; padding: 15px 20px; border: 0; border-radius: 13px;
@@ -50,6 +75,7 @@ button {
 }
 button:hover { transform: translateY(-2px); box-shadow: 0 9px 0 #4e34bf; }
 button:active { transform: translateY(5px); box-shadow: 0 2px 0 #4e34bf; }
+button:disabled { background: #aaa4be; box-shadow: none; cursor: wait; transform: none; }
 button span { margin-left: 8px; font-size: 1.3em; }
 
 .result-card { min-height: 235px; margin-top: 24px; padding: 30px; text-align: center; display: grid; place-content: center; }
@@ -65,6 +91,6 @@ footer { padding-bottom: 28px; color: #8b859d; text-align: center; font-size: 0.
 
 @media (max-width: 680px) {
   .page-shell { width: min(100% - 28px, 920px); padding-top: 48px; }
-  .filters { grid-template-columns: repeat(2, 1fr); }
+  .filters { grid-template-columns: 1fr; }
   .picker-card { padding: 20px; }
 }

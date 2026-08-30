@@ -24,48 +24,55 @@
         <div class="filters">
           <label>
             <span>校区</span>
-            <select id="campus">
+            <select id="campus" aria-label="校区">
               <option value="all">全部校区</option>
-              <option value="东校区">东校区</option>
-              <option value="西校区">西校区</option>
-              <option value="南校区">南校区</option>
             </select>
           </label>
 
           <label>
-            <span>最高预算</span>
-            <select id="budget">
-              <option value="99">不限</option>
-              <option value="10">10 元以内</option>
-              <option value="15">15 元以内</option>
-              <option value="20">20 元以内</option>
+            <span>食堂</span>
+            <select id="canteen" aria-label="食堂">
+              <option value="all">全部食堂</option>
             </select>
           </label>
 
-          <label>
-            <span>辣度</span>
-            <select id="spicyLevel">
-              <option value="all">都可以</option>
-              <option value="不辣">不辣</option>
-              <option value="微辣">微辣</option>
-              <option value="中辣">中辣</option>
-              <option value="特辣">特辣</option>
-            </select>
-          </label>
+          <div class="quick-filter">
+            <span class="filter-label">预算</span>
+            <div class="quick-options" role="radiogroup" aria-label="预算">
+              <label class="quick-option">
+                <input type="radio" name="budget" value="" checked />
+                <span>不限</span>
+              </label>
+              <label class="quick-option">
+                <input type="radio" name="budget" value="15" />
+                <span>15 元以内</span>
+              </label>
+              <label class="quick-option">
+                <input type="radio" name="budget" value="20" />
+                <span>20 元以内</span>
+              </label>
+              <label class="quick-option">
+                <input type="radio" name="budget" value="25" />
+                <span>25 元以内</span>
+              </label>
+            </div>
+          </div>
 
-          <label>
-            <span>菜品类型</span>
-            <select id="type">
-              <option value="all">全都想吃</option>
-              <option value="主食">主食</option>
-              <option value="面食">面食</option>
-              <option value="盖饭">盖饭</option>
-              <option value="小吃">小吃</option>
-            </select>
-          </label>
+          <div class="quick-filter">
+            <span class="filter-label">菜品类型</span>
+            <div id="typeOptions" class="quick-options" role="radiogroup" aria-label="菜品类型"></div>
+          </div>
         </div>
 
-        <button id="recommendButton" type="button">今天吃什么 <span>→</span></button>
+        <details class="more-filters">
+          <summary>更多条件 <span>⌄</span></summary>
+          <label class="checkbox-option">
+            <input id="noSpicy" type="checkbox" />
+            <span>不吃辣</span>
+          </label>
+        </details>
+
+        <button id="recommendButton" type="button" disabled>今天吃什么 <span>→</span></button>
       </section>
 
       <section class="result-card" id="result" aria-live="polite">

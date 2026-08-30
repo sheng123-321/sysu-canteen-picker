@@ -1,19 +1,11 @@
 const result = document.querySelector("#result");
 const recommendButton = document.querySelector("#recommendButton");
+const campusSelect = document.querySelector("#campus");
+const canteenSelect = document.querySelector("#canteen");
+const typeOptions = document.querySelector("#typeOptions");
+const ALL_VALUE = "all";
 
-// foods.json 中的数据会在页面打开时读取一次，之后每次推荐都直接使用它。
 let foods = [];
-
-async function loadFoods() {
-  try {
-    const response = await fetch("foods.json");
-    if (!response.ok) throw new Error("菜品数据读取失败");
-    foods = await response.json();
-  } catch (error) {
-    showMessage("😵", "菜品数据没有加载成功", "请使用本地服务器打开页面后再试。", true);
-    console.error(error);
-  }
-}
 
 function showMessage(emoji, title, description, isEmpty = false, detailHtml = "") {
   result.classList.toggle("empty-state", isEmpty);
@@ -26,18 +18,91 @@ function showMessage(emoji, title, description, isEmpty = false, detailHtml = ""
   `;
 }
 
-function getFilteredFoods() {
-  const campus = document.querySelector("#campus").value;
-  const budget = Number(document.querySelector("#budget").value);
-  const spicyLevel = document.querySelector("#spicyLevel").value;
-  const type = document.querySelector("#type").value;
+function getUniqueValues(fieldName, data = foods) {
+  // Set 会自动去重；具体名称始终从 foods.json 中读取。
+  return [...new Set(data.map((food) => food[fieldName]).filter(Boolean))];
+}
 
-  // every 条件都满足的菜品才会被保留下来。
+function createQuickOption(name, value, text, isSelected = false) {
+  const label = document.createElement("label");
+  const input = document.createElement("input");
+  const textSpan = document.createElement("span");
+
+  label.className = "quick-option";
+  input.type = "radio";
+  input.name = name;
+  input.value = value;
+  input.checked = isSelected;
+  textSpan.textContent = text;
+
+  label.append(input, textSpan);
+  return label;
+}
+
+function renderCampusOptions() {
+  campusSelect.replaceChildren(new Option("全部校区", ALL_VALUE));
+
+  getUniqueValues("campus").forEach((campus) => {
+    campusSelect.add(new Option(campus, campus));
+  });
+}
+
+function renderCanteenOptions() {
+  const selectedCampus = campusSelect.value;
+  const campusFoods = selectedCampus === ALL_VALUE
+    ? foods
+    : foods.filter((food) => food.campus === selectedCampus);
+
+  // 每次校区变化都重建食堂下拉框，因此会自动回到“全部食堂”。
+  canteenSelect.replaceChildren(new Option("全部食堂", ALL_VALUE));
+  getUniqueValues("canteen", campusFoods).forEach((canteen) => {
+    canteenSelect.add(new Option(canteen, canteen));
+  });
+}
+
+function renderTypeOptions() {
+  typeOptions.replaceChildren(createQuickOption("type", ALL_VALUE, "随便", true));
+
+  getUniqueValues("type").forEach((type) => {
+    typeOptions.append(createQuickOption("type", type, type));
+  });
+}
+
+function createFilterControls() {
+  renderCampusOptions();
+  renderCanteenOptions();
+  renderTypeOptions();
+}
+
+async function initializePage() {
+  try {
+    // 初始化顺序：读取 JSON → 保存菜品 → 校区 → 食堂 → 类型 → 启用推荐。
+    const response = await fetch("foods.json");
+    if (!response.ok) throw new Error("菜品数据读取失败");
+
+    foods = await response.json();
+    createFilterControls();
+    recommendButton.disabled = false;
+  } catch (error) {
+    showMessage("😵", "菜品数据没有加载成功", "请使用本地服务器打开页面后再试。", true);
+    console.error(error);
+  }
+}
+
+function getFilteredFoods() {
+  const campus = campusSelect.value;
+  const canteen = canteenSelect.value;
+  const budget = document.querySelector('input[name="budget"]:checked').value;
+  const noSpicy = document.querySelector("#noSpicy").checked;
+  const type = document.querySelector('input[name="type"]:checked').value;
+
+  // 这里仅处理校区、食堂、预算、不吃辣、类型五类筛选。
   return foods.filter((food) =>
-    (campus === "all" || food.campus === campus) &&
-    food.price <= budget &&
-    (spicyLevel === "all" || food.spicyLevel === spicyLevel) &&
-    (type === "all" || food.type === type)
+    (campus === ALL_VALUE || food.campus === campus) &&
+    (canteen === ALL_VALUE || food.canteen === canteen) &&
+    (budget === "" || food.price <= Number(budget)) &&
+    (!noSpicy || food.spicyLevel === "不辣") &&
+    (type === ALL_VALUE || food.type === type)
   );
 }
 
@@ -62,4 +127,5 @@ function recommendFood() {
 }
 
 recommendButton.addEventListener("click", recommendFood);
-loadFoods();
+campusSelect.addEventListener("change", renderCanteenOptions);
+initializePage();
