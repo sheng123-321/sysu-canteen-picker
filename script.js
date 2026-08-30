@@ -4,10 +4,12 @@ const campusSelect = document.querySelector("#campus");
 const canteenSelect = document.querySelector("#canteen");
 const typeOptions = document.querySelector("#typeOptions");
 const ALL_VALUE = "all";
+const SELECTED_MEAL_KEY = "campusFoodPickerSelectedMeal";
 
 let foods = [];
+let lastRecommendedFood = null;
 
-function showMessage(emoji, title, description, isEmpty = false, detailHtml = "") {
+function showMessage(emoji, title, description, isEmpty = false, detailHtml = "", actionHtml = "") {
   result.classList.toggle("empty-state", isEmpty);
   result.innerHTML = `
     <div class="food-emoji">${emoji}</div>
@@ -15,6 +17,7 @@ function showMessage(emoji, title, description, isEmpty = false, detailHtml = ""
     <h2>${title}</h2>
     <p class="result-description">${description}</p>
     ${detailHtml}
+    ${actionHtml}
   `;
 }
 
@@ -106,6 +109,21 @@ function getFilteredFoods() {
   );
 }
 
+function showFoodRecommendation(food) {
+  const detailHtml = `
+    <div class="food-details">
+      <span>${food.campus}</span><span>${food.type}</span>
+      <span>${food.spicyLevel}</span><span>¥ ${food.price}</span>
+    </div>`;
+  const actionHtml = `
+    <div class="result-actions">
+      <button class="result-button result-button--secondary" type="button" data-result-action="another">换一个</button>
+      <button class="result-button" type="button" data-result-action="choose">就吃这个</button>
+    </div>`;
+
+  showMessage(food.emoji, food.name, food.description, false, detailHtml, actionHtml);
+}
+
 function recommendFood() {
   const matches = getFilteredFoods();
 
@@ -114,18 +132,45 @@ function recommendFood() {
     return;
   }
 
-  // Math.random() 会产生 0 到 1 之间的小数，用它随机取得数组中的一个菜品。
-  const randomIndex = Math.floor(Math.random() * matches.length);
-  const food = matches[randomIndex];
-  const detailHtml = `
-    <div class="food-details">
-      <span>${food.campus}</span><span>${food.type}</span>
-      <span>${food.spicyLevel}</span><span>¥ ${food.price}</span>
-    </div>`;
+  // 匹配结果超过一道时，先排除上一次推荐，避免连续出现同一道菜。
+  const candidates = matches.length > 1
+    ? matches.filter((food) => food !== lastRecommendedFood)
+    : matches;
+  const randomIndex = Math.floor(Math.random() * candidates.length);
+  const food = candidates[randomIndex];
 
-  showMessage(food.emoji, food.name, food.description, false, detailHtml);
+  lastRecommendedFood = food;
+  showFoodRecommendation(food);
+}
+
+function saveSelectedFood() {
+  if (!lastRecommendedFood) return;
+
+  const selectedMeal = {
+    name: lastRecommendedFood.name,
+    school: lastRecommendedFood.school,
+    campus: lastRecommendedFood.campus,
+    canteen: lastRecommendedFood.canteen,
+    price: lastRecommendedFood.price,
+    selectedAt: new Date().toISOString(),
+  };
+
+  try {
+    localStorage.setItem(SELECTED_MEAL_KEY, JSON.stringify(selectedMeal));
+    showMessage("✅", "已记下，今天就吃这个！", `${selectedMeal.name}，祝你吃得开心。`);
+  } catch (error) {
+    showMessage("😵", "暂时没能记下选择", "请检查浏览器是否允许使用本地存储后再试。", true);
+    console.error(error);
+  }
 }
 
 recommendButton.addEventListener("click", recommendFood);
 campusSelect.addEventListener("change", renderCanteenOptions);
+result.addEventListener("click", (event) => {
+  const actionButton = event.target.closest("[data-result-action]");
+  if (!actionButton) return;
+
+  if (actionButton.dataset.resultAction === "another") recommendFood();
+  if (actionButton.dataset.resultAction === "choose") saveSelectedFood();
+});
 initializePage();

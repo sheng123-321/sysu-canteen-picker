@@ -85,6 +85,11 @@ h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2rem); }
 .result-description { margin: 10px 0 0; color: #6d6881; }
 .food-details { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .food-details span { padding: 5px 10px; border-radius: 999px; background: var(--purple-light); color: #5539d0; font-size: 0.85rem; font-weight: 700; }
+.result-actions { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.result-actions .result-button { flex: 1 1 150px; width: auto; margin-top: 0; padding: 11px 16px; font-size: 0.95rem; }
+.result-button--secondary { border: 1px solid #cfc6f4; color: var(--purple); background: #fff; box-shadow: none; }
+.result-button--secondary:hover { background: var(--purple-light); box-shadow: none; }
+.result-button--secondary:active { box-shadow: none; }
 .empty-state .food-emoji { filter: grayscale(1); }
 
 footer { padding-bottom: 28px; color: #8b859d; text-align: center; font-size: 0.85rem; }
