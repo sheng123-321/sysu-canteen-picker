@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>今天吃什么？｜校园食堂</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <p class="eyebrow">CAMPUS FOOD PICKER</p>
+        <h1>今天，<span>吃什么？</span></h1>
+        <p class="intro">把纠结交给随机，让食堂给你一点小惊喜。</p>
+      </section>
+
+      <section class="picker-card" aria-label="点餐筛选器">
+        <div class="filters">
+          <label>
+            <span>校区</span>
+            <select id="campus">
+              <option value="all">全部校区</option>
+              <option value="东校区">东校区</option>
+              <option value="西校区">西校区</option>
+              <option value="南校区">南校区</option>
+            </select>
+          </label>
+
+          <label>
+            <span>最高预算</span>
+            <select id="budget">
+              <option value="99">不限</option>
+              <option value="10">10 元以内</option>
+              <option value="15">15 元以内</option>
+              <option value="20">20 元以内</option>
+            </select>
+          </label>
+
+          <label>
+            <span>辣度</span>
+            <select id="spicyLevel">
+              <option value="all">都可以</option>
+              <option value="不辣">不辣</option>
+              <option value="微辣">微辣</option>
+              <option value="中辣">中辣</option>
+              <option value="特辣">特辣</option>
+            </select>
+          </label>
+
+          <label>
+            <span>菜品类型</span>
+            <select id="type">
+              <option value="all">全都想吃</option>
+              <option value="主食">主食</option>
+              <option value="面食">面食</option>
+              <option value="盖饭">盖饭</option>
+              <option value="小吃">小吃</option>
+            </select>
+          </label>
+        </div>
+
+        <button id="recommendButton" type="button">今天吃什么 <span>→</span></button>
+      </section>
+
+      <section class="result-card" id="result" aria-live="polite">
+        <div class="food-emoji">🍜</div>
+        <p class="result-label">等你来抽签</p>
+        <h2>选好条件，开吃吧！</h2>
+        <p class="result-description">点击上面的按钮，看看食堂今天为你准备了什么。</p>
+      </section>
+    </main>
+
+    <footer>今天也要好好吃饭呀 ✦</footer>
+    <script src="script.js"></script>
+  </body>
+</html>
