@@ -26,6 +26,10 @@ body {
 h1 { margin: 0; font-size: clamp(2.5rem, 7vw, 4.7rem); line-height: 1.1; letter-spacing: -0.08em; }
 h1 span { color: var(--purple); }
 .intro { margin: 18px 0 36px; color: #6d6881; }
+.announcement {
+  margin: -14px 0 24px; padding: 10px 14px; border: 1px solid #e6e0f5; border-radius: 12px;
+  color: #69627e; background: rgba(255, 255, 255, 0.7); text-align: center; font-size: 0.9rem;
+}
 
 .picker-card, .result-card {
   border: 1px solid #e7e1d9;
@@ -55,18 +59,6 @@ select:focus { outline: 3px solid #ddd5ff; border-color: var(--purple); }
 }
 .quick-option input:checked + span { border-color: var(--purple); color: #fff; background: var(--purple); }
 .quick-option input:focus-visible + span { outline: 3px solid #ddd5ff; outline-offset: 2px; }
-
-.more-filters { margin-top: 18px; border-top: 1px solid #eeeaf5; }
-.more-filters summary {
-  display: flex; align-items: center; justify-content: space-between; padding: 14px 2px 4px;
-  color: #5d5774; font-size: 0.9rem; font-weight: 700; cursor: pointer; list-style: none;
-}
-.more-filters summary::-webkit-details-marker { display: none; }
-.more-filters summary span { transition: transform 0.2s; }
-.more-filters[open] summary span { transform: rotate(180deg); }
-.checkbox-option { display: inline-flex; align-items: center; gap: 8px; padding: 12px 2px 2px; cursor: pointer; }
-.checkbox-option span { margin: 0; font-size: 0.9rem; }
-.checkbox-option input { width: 17px; height: 17px; accent-color: var(--purple); cursor: pointer; }
 
 button {
   width: 100%; margin-top: 22px; padding: 15px 20px; border: 0; border-radius: 13px;

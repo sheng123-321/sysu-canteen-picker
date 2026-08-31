@@ -98,15 +98,13 @@ function getFilteredFoods() {
   const campus = campusSelect.value;
   const canteen = canteenSelect.value;
   const budget = document.querySelector('input[name="budget"]:checked').value;
-  const noSpicy = document.querySelector("#noSpicy").checked;
   const type = document.querySelector('input[name="type"]:checked').value;
 
-  // 这里仅处理校区、食堂、预算、不吃辣、类型五类筛选。
+  // 这里仅处理校区、食堂、预算、类型四类筛选。
   return foods.filter((food) =>
     (campus === ALL_VALUE || food.campus === campus) &&
     (canteen === ALL_VALUE || food.canteen === canteen) &&
     (budget === "" || food.price <= Number(budget)) &&
-    (!noSpicy || food.spicyLevel === "不辣") &&
     (type === ALL_VALUE || food.type === type)
   );
 }
@@ -114,11 +112,10 @@ function getFilteredFoods() {
 function showFoodRecommendation(food) {
   const emoji = typeof food.emoji === "string" && food.emoji.trim() ? food.emoji : "🍽️";
   const description = typeof food.description === "string" ? food.description.trim() : "";
-  const spicyTag = food.spicyLevel ? `<span>${food.spicyLevel}</span>` : "";
   const detailHtml = `
     <div class="food-details">
       <span>${food.campus}</span><span>${food.type}</span>
-      ${spicyTag}<span>¥ ${food.price}</span>
+      <span>¥ ${food.price}</span>
     </div>`;
   const actionHtml = `
     <div class="result-actions">

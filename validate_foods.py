@@ -9,7 +9,6 @@ from pathlib import Path
 
 
 REQUIRED_FIELDS = ("school", "campus", "canteen", "name", "price", "type")
-ALLOWED_SPICY_LEVELS = ("不辣", "微辣", "中辣", "辣")
 DATA_FILE = Path(__file__).resolve().with_name("foods.json")
 
 
@@ -48,7 +47,6 @@ def validate_foods(foods):
     invalid_price = set()
     duplicate_items = set()
     unusual_price = set()
-    unusual_spicy_level = set()
     all_issue_items = set()
     seen_foods = {}
 
@@ -77,12 +75,6 @@ def validate_foods(foods):
             unusual_price.add(index)
             all_issue_items.add(index)
 
-        spicy_level = food.get("spicyLevel")
-        if not is_empty(spicy_level) and spicy_level not in ALLOWED_SPICY_LEVELS:
-            print(f"⚠️ {label} 辣度值异常：{spicy_level!r}（允许值：{'、'.join(ALLOWED_SPICY_LEVELS)}）")
-            unusual_spicy_level.add(index)
-            all_issue_items.add(index)
-
         duplicate_fields = ("school", "campus", "canteen", "name")
         if not any(is_empty(food.get(field)) for field in duplicate_fields):
             duplicate_key = tuple(food[field] for field in duplicate_fields)
@@ -102,7 +94,6 @@ def validate_foods(foods):
     print(f"❌ 价格格式/数值错误：{len(invalid_price)}")
     print(f"⚠️ 疑似重复：{len(duplicate_items)}")
     print(f"⚠️ 价格异常：{len(unusual_price)}")
-    print(f"⚠️ 辣度值异常：{len(unusual_spicy_level)}")
 
     # 只有错误（不是警告）时返回非 0 状态码，方便未来接入自动化流程。
     return 1 if missing_required or invalid_price else 0
