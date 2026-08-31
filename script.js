@@ -11,11 +11,13 @@ let lastRecommendedFood = null;
 
 function showMessage(emoji, title, description, isEmpty = false, detailHtml = "", actionHtml = "") {
   result.classList.toggle("empty-state", isEmpty);
+  const descriptionHtml = description ? `<p class="result-description">${description}</p>` : "";
+
   result.innerHTML = `
     <div class="food-emoji">${emoji}</div>
     <p class="result-label">${isEmpty ? "换个条件试试" : "今日推荐"}</p>
     <h2>${title}</h2>
-    <p class="result-description">${description}</p>
+    ${descriptionHtml}
     ${detailHtml}
     ${actionHtml}
   `;
@@ -110,10 +112,13 @@ function getFilteredFoods() {
 }
 
 function showFoodRecommendation(food) {
+  const emoji = typeof food.emoji === "string" && food.emoji.trim() ? food.emoji : "🍽️";
+  const description = typeof food.description === "string" ? food.description.trim() : "";
+  const spicyTag = food.spicyLevel ? `<span>${food.spicyLevel}</span>` : "";
   const detailHtml = `
     <div class="food-details">
       <span>${food.campus}</span><span>${food.type}</span>
-      <span>${food.spicyLevel}</span><span>¥ ${food.price}</span>
+      ${spicyTag}<span>¥ ${food.price}</span>
     </div>`;
   const actionHtml = `
     <div class="result-actions">
@@ -121,7 +126,7 @@ function showFoodRecommendation(food) {
       <button class="result-button" type="button" data-result-action="choose">就吃这个</button>
     </div>`;
 
-  showMessage(food.emoji, food.name, food.description, false, detailHtml, actionHtml);
+  showMessage(emoji, food.name, description, false, detailHtml, actionHtml);
 }
 
 function recommendFood() {
