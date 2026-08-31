@@ -1,12 +1,138 @@
 [
-  { "name": "番茄鸡蛋盖饭", "school": "中山大学", "campus": "东校区", "canteen": "东区一食堂", "price": 12, "spicyLevel": "不辣", "type": "盖饭", "emoji": "🍅", "description": "酸甜开胃，配一碗热乎乎的米饭。" },
-  { "name": "麻辣香锅", "school": "中山大学", "campus": "东校区", "canteen": "东区一食堂", "price": 18, "spicyLevel": "中辣", "type": "主食", "emoji": "🥘", "description": "自己挑菜，每一口都是满足感。" },
-  { "name": "牛肉拉面", "school": "中山大学", "campus": "东校区", "canteen": "东区二食堂", "price": 15, "spicyLevel": "微辣", "type": "面食", "emoji": "🍜", "description": "汤头鲜香，面条筋道，暖胃又顶饱。" },
-  { "name": "照烧鸡腿饭", "school": "中山大学", "campus": "西校区", "canteen": "西区一食堂", "price": 16, "spicyLevel": "不辣", "type": "盖饭", "emoji": "🍗", "description": "甜咸酱汁包裹嫩鸡腿，稳稳的幸福。" },
-  { "name": "重庆小面", "school": "中山大学", "campus": "西校区", "canteen": "西区二食堂", "price": 10, "spicyLevel": "中辣", "type": "面食", "emoji": "🌶️", "description": "麻辣鲜香，适合想被味道叫醒的中午。" },
-  { "name": "鸡蛋灌饼", "school": "中山大学", "campus": "西校区", "canteen": "西区二食堂", "price": 7, "spicyLevel": "微辣", "type": "小吃", "emoji": "🫓", "description": "课间十分钟，也能收获扎实的快乐。" },
-  { "name": "石锅拌饭", "school": "中山大学", "campus": "南校区", "canteen": "南区一食堂", "price": 17, "spicyLevel": "微辣", "type": "主食", "emoji": "🍚", "description": "锅巴脆脆的，拌开以后香气翻倍。" },
-  { "name": "鱼香肉丝盖饭", "school": "中山大学", "campus": "南校区", "canteen": "南区一食堂", "price": 14, "spicyLevel": "微辣", "type": "盖饭", "emoji": "🥢", "description": "酸甜微辣，是食堂里的经典可靠选择。" },
-  { "name": "酸辣粉", "school": "中山大学", "campus": "南校区", "canteen": "南区二食堂", "price": 11, "spicyLevel": "特辣", "type": "小吃", "emoji": "🥣", "description": "又酸又辣，嗦粉爱好者请举手。" },
-  { "name": "菌菇鸡汤面", "school": "中山大学", "campus": "南校区", "canteen": "南区二食堂", "price": 13, "spicyLevel": "不辣", "type": "面食", "emoji": "🍲", "description": "清清爽爽的一碗，疲惫时特别治愈。" }
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "卤鹅饭",
+    "type": "米饭",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "卤鹅叉烧饭",
+    "type": "米饭",
+    "price": 18
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "油鸡叉烧饭",
+    "type": "米饭",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "豉油皇鸡腿饭",
+    "type": "米饭",
+    "price": 13
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "潮式杂卤饭",
+    "type": "米饭",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "挂炉烧鸭饭",
+    "type": "米饭",
+    "price": 12
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "油鸡烧鸭饭",
+    "type": "米饭",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "手撕鸡饭",
+    "type": "米饭",
+    "price": 12
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "牛肉健康杂粮套餐饭",
+    "type": "米饭",
+    "price": 18
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "牛肉健康荞麦面套餐饭",
+    "type": "面食",
+    "price": 18
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "鲜虾健康杂粮饭",
+    "type": "米饭",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "鲜虾健康荞麦面",
+    "type": "面食",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "腊味香芋焗饭",
+    "type": "米饭",
+    "price": 16
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "美味健康烤春鸡饭",
+    "type": "米饭",
+    "price": 16.8
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "芝士焗鸡扒饭",
+    "type": "米饭",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "芝士鸡扒焗意粉",
+    "type": "面食",
+    "price": 15
+  },
+  {
+    "school": "中山大学",
+    "campus": "南校区",
+    "canteen": "学一食堂",
+    "name": "菠萝焗饭",
+    "type": "米饭",
+    "price": 15
+  }
 ]
