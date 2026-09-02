@@ -9,9 +9,7 @@ const messageList = document.querySelector("#messageList");
 const ALL_VALUE = "all";
 const DEFAULT_CAMPUS = "南校区";
 const SELECTED_MEAL_KEY = "campusFoodPickerSelectedMeal";
-const SUPABASE_URL = "https://totishqeeuwjepwiupuj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdGlzaHFlZXV3amVwd2l1cHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMjcxMzgsImV4cCI6MjEwMzgwMzEzOH0.LchFGqYPuL3pI9BkIFo-PzJn7J8PD4oJeigpKiK4lOw";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const MESSAGES_KEY = "campusFoodPickerMessages";
 
 let foods = [];
 let lastRecommendedFood = null;
@@ -64,25 +62,24 @@ function renderCampusOptions() {
   }
 }
 
-function formatMessageDate(createdAt) {
-  return new Date(createdAt).toLocaleDateString("zh-CN", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+function getLocalDate() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
 }
 
-async function renderMessages() {
-  const { data: messages, error } = await supabaseClient
-    .from("messages")
-    .select("content, created_at")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.error("读取留言失败：", error);
-    return;
+function getMessages() {
+  try {
+    return JSON.parse(localStorage.getItem(MESSAGES_KEY)) || [];
+  } catch (error) {
+    console.error(error);
+    return [];
   }
+}
 
+function renderMessages() {
+  const messages = getMessages();
   messageList.replaceChildren();
 
   messages.forEach((item) => {
@@ -90,24 +87,21 @@ async function renderMessages() {
     const text = document.createElement("p");
     const time = document.createElement("time");
     card.className = "message-item";
-    text.textContent = `📌 ${item.content}`;
-    time.textContent = formatMessageDate(item.created_at);
+    text.textContent = `📌 ${item.message}`;
+    time.textContent = item.time;
     card.append(text, time);
     messageList.append(card);
   });
 }
 
-async function saveMessage(event) {
+function saveMessage(event) {
   event.preventDefault();
   const message = messageInput.value.trim();
   if (!message) return;
 
-  const { error } = await supabaseClient.from("messages").insert({ content: message });
-  if (error) {
-    console.error("发布留言失败：", error);
-    return;
-  }
-
+  const messages = getMessages();
+  messages.unshift({ message, time: getLocalDate() });
+  localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
   messageForm.reset();
   renderMessages();
 }

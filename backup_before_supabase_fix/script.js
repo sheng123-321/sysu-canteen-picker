@@ -10,8 +10,9 @@ const ALL_VALUE = "all";
 const DEFAULT_CAMPUS = "南校区";
 const SELECTED_MEAL_KEY = "campusFoodPickerSelectedMeal";
 const SUPABASE_URL = "https://totishqeeuwjepwiupuj.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdGlzaHFlZXV3amVwd2l1cHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMjcxMzgsImV4cCI6MjEwMzgwMzEzOH0.LchFGqYPuL3pI9BkIFo-PzJn7J8PD4oJeigpKiK4lOw";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdGlzaHFlZXV3amVwd2l1cHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMjcxMzgsImV4cCI6MjEwMzgwMzEzOH0.LchFGqYPuL3pI9BkIFo-PzJn7J8PD4oJeigpKiK4lOw";
+const { createClient } = window.supabase;
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let foods = [];
 let lastRecommendedFood = null;
@@ -73,7 +74,7 @@ function formatMessageDate(createdAt) {
 }
 
 async function renderMessages() {
-  const { data: messages, error } = await supabaseClient
+  const { data: messages, error } = await supabase
     .from("messages")
     .select("content, created_at")
     .order("created_at", { ascending: false });
@@ -102,7 +103,7 @@ async function saveMessage(event) {
   const message = messageInput.value.trim();
   if (!message) return;
 
-  const { error } = await supabaseClient.from("messages").insert({ content: message });
+  const { error } = await supabase.from("messages").insert({ content: message });
   if (error) {
     console.error("发布留言失败：", error);
     return;
