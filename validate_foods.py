@@ -58,6 +58,11 @@ def validate_foods(foods):
             continue
 
         label = food_label(index, food)
+        # floor 是可选字段：缺失、None 或空字符串都不产生错误。
+        floor = food.get("floor", "")
+        if floor is None:
+            floor = ""
+
         missing_fields = [field for field in REQUIRED_FIELDS if is_empty(food.get(field))]
         if missing_fields:
             print(f"❌ {label} 缺少必填字段：{', '.join(missing_fields)}")

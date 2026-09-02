@@ -84,22 +84,10 @@ h2 { margin: 0; font-size: clamp(1.5rem, 4vw, 2rem); }
 .result-button--secondary:active { box-shadow: none; }
 .empty-state .food-emoji { filter: grayscale(1); }
 
-.message-board { margin-top: 24px; padding: 26px; border: 1px solid #e7e1d9; border-radius: 24px; background: rgba(255, 255, 255, 0.88); }
-.message-board h2 { font-size: 1.35rem; }
-.message-form { margin-top: 16px; }
-.message-form textarea { width: 100%; resize: vertical; padding: 12px; border: 1px solid #ddd7ec; border-radius: 12px; color: var(--ink); font: inherit; }
-.message-form textarea:focus { outline: 3px solid #ddd5ff; border-color: var(--purple); }
-.message-form button { margin-top: 12px; padding: 11px 16px; font-size: 0.95rem; }
-.message-list { display: grid; gap: 10px; margin-top: 20px; }
-.message-item { padding: 13px 14px; border-radius: 12px; background: #f7f5ff; }
-.message-item p { margin: 0; white-space: pre-wrap; }
-.message-item time { display: block; margin-top: 7px; color: #827b98; font-size: 0.8rem; }
-.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-
 footer { padding-bottom: 28px; color: #8b859d; text-align: center; font-size: 0.85rem; }
 
 @media (max-width: 680px) {
   .page-shell { width: min(100% - 28px, 920px); padding-top: 48px; }
   .filters { grid-template-columns: 1fr; }
-  .picker-card, .message-board { padding: 20px; }
+  .picker-card { padding: 20px; }
 }

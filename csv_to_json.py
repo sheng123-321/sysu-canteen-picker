@@ -11,6 +11,7 @@ from pathlib import Path
 
 
 REQUIRED_FIELDS = ("school", "campus", "canteen", "name", "price", "type")
+CSV_FIELDS = REQUIRED_FIELDS + ("floor",)
 TEXT_FIELDS = ("school", "campus", "canteen", "name", "type")
 BASE_DIR = Path(__file__).resolve().parent
 CSV_FILE = BASE_DIR / "foods.csv"
@@ -47,7 +48,7 @@ def read_and_validate_csv():
     with CSV_FILE.open("r", encoding="utf-8-sig", newline="") as file:
         reader = csv.DictReader(file)
         headers = reader.fieldnames or []
-        missing_headers = [field for field in REQUIRED_FIELDS if field not in headers]
+        missing_headers = [field for field in CSV_FIELDS if field not in headers]
 
         if missing_headers:
             print(f"❌ CSV 缺少必填表头：{', '.join(missing_headers)}")
@@ -81,9 +82,12 @@ def read_and_validate_csv():
             if missing_fields:
                 errors.append(f"❌ 第 {line_number} 行（{row.get('name') or '未命名菜品'}）：必填字段为空：{', '.join(missing_fields)}")
 
-            # 保留 CSV 的其他列，例如 spicyLevel、description、emoji，供网页继续使用。
+            # floor 的表头必须存在，但楼层本身允许为空，并保留为空字符串。
+            food["floor"] = (row.get("floor") or "").strip()
+
+            # 保留 CSV 的其他列，例如 description、emoji，供网页继续使用。
             for field, value in row.items():
-                if field and field not in REQUIRED_FIELDS:
+                if field and field not in REQUIRED_FIELDS and field != "floor":
                     food[field] = value
 
             if not missing_fields and price is not None:
