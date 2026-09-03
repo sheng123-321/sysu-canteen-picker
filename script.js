@@ -6,15 +6,38 @@ const typeOptions = document.querySelector("#typeOptions");
 const messageForm = document.querySelector("#messageForm");
 const messageInput = document.querySelector("#messageInput");
 const messageList = document.querySelector("#messageList");
+const messageStatus = document.querySelector("#messageStatus");
 const ALL_VALUE = "all";
 const DEFAULT_CAMPUS = "南校区";
 const SELECTED_MEAL_KEY = "campusFoodPickerSelectedMeal";
+const LAST_MESSAGE_SENT_AT_KEY = "campusFoodPickerLastMessageSentAt";
+const MESSAGE_RATE_LIMIT_MS = 60 * 1000;
+// 基础留言词库：覆盖广告引流、诈骗风险、粗俗辱骂和明显违规内容。
+// 英文词会在 containsBlockedWord() 中自动按不区分大小写的方式匹配。
+const BLOCKED_WORDS = [
+  // 广告、推广与引流
+  "广告", "推广", "兼职", "刷单", "代理", "加盟", "加微信", "加vx", "加v", "微信号", "加qq", "qq号", "联系方式", "私聊我", "扫码加入", "进群", "引流", "全网最低",
+  // 诈骗与高风险交易
+  "诈骗", "骗钱", "转账", "刷信誉", "刷信用", "赌博", "博彩", "投注", "六合彩", "高利贷", "非法集资", "洗钱", "裸聊", "色情服务",
+  // 不文明辱骂（不包含针对特定群体的攻击性词汇）
+  "傻逼", "煞笔", "脑残", "废物", "狗东西", "滚蛋", "去死", "妈的", "他妈的", "操你", "fuck", "shit",
+  // 明显违规内容
+  "毒品", "卖毒", "枪支", "卖枪", "爆炸物", "制作炸弹", "儿童色情",
+];
 const SUPABASE_URL = "https://totishqeeuwjepwiupuj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdGlzaHFlZXV3amVwd2l1cHVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyMjcxMzgsImV4cCI6MjEwMzgwMzEzOH0.LchFGqYPuL3pI9BkIFo-PzJn7J8PD4oJeigpKiK4lOw";
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// 留言区不再提供前端登录，因此忽略浏览器中可能遗留的管理员 session，始终以 anon 身份请求。
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+});
 
 let foods = [];
 let lastRecommendedFood = null;
+let messageChannel = null;
 
 function showMessage(emoji, title, description, isEmpty = false, detailHtml = "", actionHtml = "") {
   result.classList.toggle("empty-state", isEmpty);
@@ -72,7 +95,28 @@ function formatMessageDate(createdAt) {
   });
 }
 
-async function renderMessages() {
+function setMessageStatus(text = "") {
+  messageStatus.textContent = text;
+}
+
+function getRemainingMessageWaitSeconds() {
+  try {
+    const lastSentAt = Number(localStorage.getItem(LAST_MESSAGE_SENT_AT_KEY));
+    const remainingMs = lastSentAt + MESSAGE_RATE_LIMIT_MS - Date.now();
+    return remainingMs > 0 ? Math.ceil(remainingMs / 1000) : 0;
+  } catch (error) {
+    // localStorage 不可用时不阻断正常留言，只跳过本地频率限制。
+    console.warn("无法读取留言频率记录：", error);
+    return 0;
+  }
+}
+
+function containsBlockedWord(message) {
+  const normalizedMessage = message.toLowerCase();
+  return BLOCKED_WORDS.some((word) => word && normalizedMessage.includes(word.toLowerCase()));
+}
+
+async function loadMessages() {
   const { data: messages, error } = await supabaseClient
     .from("messages")
     .select("content, created_at")
@@ -102,14 +146,51 @@ async function saveMessage(event) {
   const message = messageInput.value.trim();
   if (!message) return;
 
+  if (containsBlockedWord(message)) {
+    setMessageStatus("留言包含不适宜内容，请修改后再发布。");
+    return;
+  }
+
+  const remainingSeconds = getRemainingMessageWaitSeconds();
+  if (remainingSeconds > 0) {
+    setMessageStatus(`请在 ${remainingSeconds} 秒后再发布留言。`);
+    return;
+  }
+
   const { error } = await supabaseClient.from("messages").insert({ content: message });
   if (error) {
     console.error("发布留言失败：", error);
+    setMessageStatus("发布失败，请稍后再试。");
     return;
   }
 
   messageForm.reset();
-  renderMessages();
+  try {
+    // 仅在 Supabase 写入成功后记录时间，失败不会消耗发布次数。
+    localStorage.setItem(LAST_MESSAGE_SENT_AT_KEY, String(Date.now()));
+  } catch (error) {
+    console.warn("无法保存留言频率记录：", error);
+  }
+  setMessageStatus("留言已发布。");
+}
+
+function subscribeToMessages() {
+  if (messageChannel) return;
+
+  messageChannel = supabaseClient
+    .channel("messages-live")
+    .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, loadMessages)
+    .on("postgres_changes", { event: "DELETE", schema: "public", table: "messages" }, loadMessages)
+    .subscribe((status) => {
+      if (status === "CHANNEL_ERROR") console.error("留言实时连接失败。");
+    });
+}
+
+async function removeMessagesSubscription() {
+  if (!messageChannel) return;
+  const channel = messageChannel;
+  messageChannel = null;
+  await supabaseClient.removeChannel(channel);
 }
 
 function renderCanteenOptions() {
@@ -240,5 +321,11 @@ result.addEventListener("click", (event) => {
   if (actionButton.dataset.resultAction === "another") recommendFood();
   if (actionButton.dataset.resultAction === "choose") saveSelectedFood();
 });
+
+window.addEventListener("pagehide", () => {
+  removeMessagesSubscription();
+});
+
 initializePage();
-renderMessages();
+loadMessages();
+subscribeToMessages();
